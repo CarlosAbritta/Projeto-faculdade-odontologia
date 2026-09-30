@@ -63,10 +63,10 @@ export default function ChatPage() {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-800 leading-tight">Clínica Odontológica</h1>
+              <h1 className="text-lg font-bold text-gray-800 leading-tight">Clínica Britannia</h1>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <p className="text-xs font-medium text-green-600">Assistente Online</p>
+                <p className="text-xs font-medium text-green-600">Shirley • Assistente Online</p>
               </div>
             </div>
           </div>
@@ -78,11 +78,31 @@ export default function ChatPage() {
         <div className="max-w-3xl mx-auto space-y-6">
           
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-40 text-center space-y-4 animate-fade-in">
-              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>
+            <div className="flex flex-col items-center justify-center h-full min-h-[50vh] text-center space-y-6 animate-fade-in">
+              <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 mb-2 shadow-sm border border-blue-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>
               </div>
-              <p className="text-gray-500 font-medium">Envie um "Olá" para iniciar seu atendimento.</p>
+              <div className="space-y-2">
+                <h2 className="text-xl font-bold text-gray-800">Como posso ajudar?</h2>
+                <p className="text-gray-500 font-medium text-sm max-w-xs mx-auto">
+                  Descreva o que está sentindo ou escolha uma das opções abaixo.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full max-w-md mx-auto">
+                <button 
+                  onClick={() => chatProps.sendMessage({ role: 'user', content: 'Olá, estou com muita dor de dente!' } as any)}
+                  className="flex-1 bg-white border border-gray-200 text-gray-700 py-3 px-4 rounded-xl shadow-sm hover:border-blue-400 hover:text-blue-600 transition-all text-sm font-medium text-left flex items-center gap-2"
+                >
+                  <span className="text-lg">😣</span> Estou com dor
+                </button>
+                <button 
+                  onClick={() => chatProps.sendMessage({ role: 'user', content: 'Olá, gostaria de agendar uma avaliação de rotina.' } as any)}
+                  className="flex-1 bg-white border border-gray-200 text-gray-700 py-3 px-4 rounded-xl shadow-sm hover:border-blue-400 hover:text-blue-600 transition-all text-sm font-medium text-left flex items-center gap-2"
+                >
+                  <span className="text-lg">📅</span> Agendar avaliação
+                </button>
+              </div>
             </div>
           )}
           
@@ -114,7 +134,14 @@ export default function ChatPage() {
                       ? 'bg-gradient-to-br from-blue-600 to-blue-500 text-white rounded-tr-sm' 
                       : 'bg-white border border-gray-100 text-gray-700 rounded-tl-sm'
                   }`}>
-                    <span className="whitespace-pre-wrap">{displayMessage}</span>
+                    <div className="whitespace-pre-wrap">
+                      {displayMessage.split(/(\*\*.*?\*\*)/g).map((part: string, i: number) => {
+                        if (part.startsWith('**') && part.endsWith('**')) {
+                          return <strong key={i} className="font-semibold">{part.slice(2, -2)}</strong>;
+                        }
+                        return <span key={i}>{part}</span>;
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -160,8 +187,19 @@ export default function ChatPage() {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="translate-x-[-1px] translate-y-[1px]"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
             </button>
           </form>
-          <div className="text-center mt-3">
-            <p className="text-[11px] text-gray-400">Suas informações são tratadas com sigilo profissional.</p>
+          <div className="flex items-center justify-between mt-3 px-2">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="text-[11px] text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1"
+              title="Reiniciar Atendimento"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              Reiniciar
+            </button>
+            <p className="text-[11px] text-gray-400 font-medium text-right">
+              Desenvolvido por Carlos Abritta
+            </p>
           </div>
         </div>
       </footer>
